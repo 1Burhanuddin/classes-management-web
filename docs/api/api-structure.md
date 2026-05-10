@@ -123,6 +123,22 @@ Current access:
 - `TEACHER`: read and manage announcements for assigned batches only.
 - `STUDENT`: read announcements for own batch only.
 
+Fees:
+
+```txt
+GET    /api/fees
+POST   /api/fees
+GET    /api/fees/:id
+PATCH  /api/fees/:id
+DELETE /api/fees/:id
+```
+
+Current access:
+
+- `ADMIN`: read and manage all fees.
+- `STUDENT`: read own fees only.
+- `TEACHER`: no fee access in the MVP.
+
 ## Request Pattern
 
 1. Route handler receives the request.
