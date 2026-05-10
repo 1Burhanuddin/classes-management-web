@@ -75,6 +75,22 @@ DELETE /api/teachers/:id
 
 Current access: `ADMIN`.
 
+Attendance:
+
+```txt
+GET    /api/attendance
+POST   /api/attendance
+GET    /api/attendance/:id
+PATCH  /api/attendance/:id
+DELETE /api/attendance/:id
+```
+
+Current access:
+
+- `ADMIN`: read and manage all attendance.
+- `TEACHER`: read and manage attendance for assigned batches only.
+- `STUDENT`: read own attendance only.
+
 ## Request Pattern
 
 1. Route handler receives the request.

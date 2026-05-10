@@ -4,7 +4,7 @@ import { createClassService, type ClassServiceDb } from "./class.service-core";
 
 const classId = "11111111-1111-4111-8111-111111111111";
 
-function createMockDb(overrides: Partial<ClassServiceDb> = {}) {
+function createMockDb(overrides: Record<string, unknown> = {}) {
   const db = {
     class: {
       count: vi.fn().mockResolvedValue(0),
@@ -40,7 +40,7 @@ describe("class service", () => {
       class: {
         findUnique: vi.fn().mockResolvedValue(null),
       },
-    } as Partial<ClassServiceDb>);
+    });
     const service = createClassService(db);
 
     await expect(service.getClass(classId)).rejects.toMatchObject(new ApiError(404, "Class not found"));
@@ -51,7 +51,7 @@ describe("class service", () => {
       class: {
         findUnique: vi.fn().mockResolvedValue({ id: classId, name: "Grade 10", _count: { batches: 1 } }),
       },
-    } as Partial<ClassServiceDb>);
+    });
     const service = createClassService(db);
 
     await expect(service.deleteClass(classId)).rejects.toMatchObject(
@@ -65,7 +65,7 @@ describe("class service", () => {
         count: vi.fn().mockResolvedValue(22),
         findMany: vi.fn().mockResolvedValue([]),
       },
-    } as Partial<ClassServiceDb>);
+    });
     const service = createClassService(db);
 
     const result = await service.listClasses({
