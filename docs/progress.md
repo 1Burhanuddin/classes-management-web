@@ -106,6 +106,29 @@ DELETE /api/teachers/:id
 - Delete is guarded: teachers with batches cannot be deleted.
 - Backend edge-case tests added for validation and service behavior.
 
+### Attendance Backend
+
+- Attendance validation added with Zod.
+- Attendance service layer added.
+- Attendance API routes added:
+
+```txt
+GET    /api/attendance
+POST   /api/attendance
+GET    /api/attendance/:id
+PATCH  /api/attendance/:id
+DELETE /api/attendance/:id
+```
+
+- RTK Query attendance endpoints added.
+- Attendance dates are accepted as `YYYY-MM-DD` and normalized to UTC midnight.
+- `ADMIN` can read and manage all attendance.
+- `TEACHER` can read and manage attendance only for assigned batches.
+- `STUDENT` can read only their own attendance.
+- Create is guarded against duplicate student, batch, and date records.
+- Create is guarded so the student must belong to the selected batch.
+- Backend edge-case tests added for validation and service behavior.
+
 ## Verification
 
 Latest checks:
@@ -146,14 +169,22 @@ Current test coverage:
 - Teacher service rejects users already linked to student or teacher profiles.
 - Teacher service verifies role promotion on create.
 - Teacher service rejects deletes when batches exist.
+- Attendance validation rejects invalid dates.
+- Attendance validation rejects invalid statuses.
+- Attendance validation rejects empty updates and normalized-empty updates.
+- Attendance service rejects unassigned teacher writes.
+- Attendance service rejects student writes.
+- Attendance service rejects student and batch mismatches.
+- Attendance service rejects duplicate attendance.
+- Attendance service limits student reads to their own attendance.
 
 ## Next Work
 
 Recommended next backend steps:
 
-1. Add Attendance module API with teacher/batch ownership checks.
-2. Add endpoint-level tests for route responses once test auth helpers are introduced.
-3. Add Assignments module API.
+1. Add Assignments module API.
+2. Add Announcements module API.
+3. Add endpoint-level tests for route responses once test auth helpers are introduced.
 4. Start UI only after the UI kit is provided.
 
 ## Notes For Other Developers
