@@ -107,6 +107,22 @@ Current access:
 - `TEACHER`: read and manage assignments for assigned batches only.
 - `STUDENT`: read assignments for own batch only.
 
+Announcements:
+
+```txt
+GET    /api/announcements
+POST   /api/announcements
+GET    /api/announcements/:id
+PATCH  /api/announcements/:id
+DELETE /api/announcements/:id
+```
+
+Current access:
+
+- `ADMIN`: read and manage all announcements.
+- `TEACHER`: read and manage announcements for assigned batches only.
+- `STUDENT`: read announcements for own batch only.
+
 ## Request Pattern
 
 1. Route handler receives the request.
