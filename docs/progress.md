@@ -129,6 +129,29 @@ DELETE /api/attendance/:id
 - Create is guarded so the student must belong to the selected batch.
 - Backend edge-case tests added for validation and service behavior.
 
+### Assignments Backend
+
+- Assignments validation added with Zod.
+- Assignments service layer added.
+- Assignments API routes added:
+
+```txt
+GET    /api/assignments
+POST   /api/assignments
+GET    /api/assignments/:id
+PATCH  /api/assignments/:id
+DELETE /api/assignments/:id
+```
+
+- RTK Query assignment endpoints added.
+- Assignment due dates are accepted as `YYYY-MM-DD` and normalized to UTC midnight.
+- Assignment file uploads stay external; API stores `fileUrl` only.
+- `ADMIN` can read and manage all assignments.
+- `TEACHER` can read and manage assignments only for assigned batches.
+- `STUDENT` can read assignments only for their own batch.
+- Create/update validates batch existence.
+- Backend edge-case tests added for validation and service behavior.
+
 ## Verification
 
 Latest checks:
@@ -177,13 +200,21 @@ Current test coverage:
 - Attendance service rejects student and batch mismatches.
 - Attendance service rejects duplicate attendance.
 - Attendance service limits student reads to their own attendance.
+- Assignment validation rejects short titles.
+- Assignment validation rejects invalid file URLs.
+- Assignment validation rejects impossible due dates.
+- Assignment validation rejects empty updates and normalized-empty updates.
+- Assignment validation caps page size.
+- Assignment service rejects unassigned teacher writes.
+- Assignment service rejects student writes.
+- Assignment service limits student reads to their own batch.
 
 ## Next Work
 
 Recommended next backend steps:
 
-1. Add Assignments module API.
-2. Add Announcements module API.
+1. Add Announcements module API.
+2. Add Fees module API.
 3. Add endpoint-level tests for route responses once test auth helpers are introduced.
 4. Start UI only after the UI kit is provided.
 
