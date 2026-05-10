@@ -46,6 +46,44 @@ DELETE /api/students/:id
 - RTK Query student endpoints added.
 - Backend edge-case tests added for validation and service behavior.
 
+### Classes Backend
+
+- Classes validation added with Zod.
+- Classes service layer added.
+- Classes API routes added:
+
+```txt
+GET    /api/classes
+POST   /api/classes
+GET    /api/classes/:id
+PATCH  /api/classes/:id
+DELETE /api/classes/:id
+```
+
+- RTK Query class endpoints added in `src/store/api/classApi.ts`.
+- Delete is guarded: classes with batches cannot be deleted.
+- Backend edge-case tests added for validation and service behavior.
+
+### Batches Backend
+
+- Batches validation added with Zod.
+- Batches service layer added.
+- Batches API routes added:
+
+```txt
+GET    /api/batches
+POST   /api/batches
+GET    /api/batches/:id
+PATCH  /api/batches/:id
+DELETE /api/batches/:id
+```
+
+- RTK Query batch endpoints added.
+- Create/update validates class existence.
+- Create/update validates teacher existence when `teacherId` is provided.
+- Delete is guarded: batches with students, assignments, announcements, or attendance cannot be deleted.
+- Backend edge-case tests added for validation and service behavior.
+
 ## Verification
 
 Latest checks:
@@ -67,16 +105,26 @@ Current test coverage:
 - Student service rejects missing linked users.
 - Student service rejects users already linked to another student.
 - Student service verifies pagination behavior.
+- Class validation rejects short names.
+- Class validation rejects empty updates.
+- Class validation caps page size.
+- Class service rejects missing records.
+- Class service rejects deletes when batches exist.
+- Batch validation rejects invalid time strings.
+- Batch validation rejects empty updates.
+- Batch validation caps page size.
+- Batch service rejects missing classes.
+- Batch service rejects missing teachers.
+- Batch service rejects deletes when dependent records exist.
 
 ## Next Work
 
 Recommended next backend steps:
 
-1. Add Classes module API.
-2. Add Batches module API.
-3. Add Teacher module API.
-4. Add endpoint-level tests for route responses once test auth helpers are introduced.
-5. Start UI only after the UI kit is provided.
+1. Add Teacher module API.
+2. Add endpoint-level tests for route responses once test auth helpers are introduced.
+3. Add Attendance module API after teacher/batch ownership rules are finalized.
+4. Start UI only after the UI kit is provided.
 
 ## Notes For Other Developers
 
