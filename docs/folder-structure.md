@@ -25,6 +25,7 @@ src/
 │   │   ├── student.service.ts
 │   │   └── index.ts
 │   │
+│   ├── classes/
 │   ├── teachers/
 │   ├── batches/
 │   ├── attendance/
@@ -38,6 +39,7 @@ src/
 │   ├── provider.tsx
 │   └── api/
 │       ├── baseApi.ts
+│       ├── classApi.ts
 │       ├── studentApi.ts
 │       ├── teacherApi.ts
 │       ├── batchApi.ts

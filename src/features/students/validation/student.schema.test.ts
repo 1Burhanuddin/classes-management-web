@@ -41,6 +41,15 @@ describe("student validation", () => {
     expect(result.success).toBe(false);
   });
 
+  it("does not allow update payloads that normalize to empty values", () => {
+    const result = updateStudentSchema.safeParse({
+      address: "   ",
+      phone: "",
+    });
+
+    expect(result.success).toBe(false);
+  });
+
   it("caps page size to protect list endpoints", () => {
     const result = listStudentsQuerySchema.safeParse({
       page: "1",
