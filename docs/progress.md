@@ -84,6 +84,28 @@ DELETE /api/batches/:id
 - Delete is guarded: batches with students, assignments, announcements, or attendance cannot be deleted.
 - Backend edge-case tests added for validation and service behavior.
 
+### Teachers Backend
+
+- Teachers validation added with Zod.
+- Teachers service layer added.
+- Teachers API routes added:
+
+```txt
+GET    /api/teachers
+POST   /api/teachers
+GET    /api/teachers/:id
+PATCH  /api/teachers/:id
+DELETE /api/teachers/:id
+```
+
+- RTK Query teacher endpoints added.
+- Teacher profile creation requires an existing `User`.
+- Creating/linking a teacher promotes the linked user to `TEACHER`.
+- Admin users cannot be linked to teacher profiles.
+- Users already linked to student or teacher profiles cannot be reused.
+- Delete is guarded: teachers with batches cannot be deleted.
+- Backend edge-case tests added for validation and service behavior.
+
 ## Verification
 
 Latest checks:
@@ -116,14 +138,22 @@ Current test coverage:
 - Batch service rejects missing classes.
 - Batch service rejects missing teachers.
 - Batch service rejects deletes when dependent records exist.
+- Teacher validation rejects invalid user ids.
+- Teacher validation rejects empty updates and normalized-empty updates.
+- Teacher validation caps page size.
+- Teacher service rejects missing users.
+- Teacher service rejects admin users.
+- Teacher service rejects users already linked to student or teacher profiles.
+- Teacher service verifies role promotion on create.
+- Teacher service rejects deletes when batches exist.
 
 ## Next Work
 
 Recommended next backend steps:
 
-1. Add Teacher module API.
+1. Add Attendance module API with teacher/batch ownership checks.
 2. Add endpoint-level tests for route responses once test auth helpers are introduced.
-3. Add Attendance module API after teacher/batch ownership rules are finalized.
+3. Add Assignments module API.
 4. Start UI only after the UI kit is provided.
 
 ## Notes For Other Developers
