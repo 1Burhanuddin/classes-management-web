@@ -91,6 +91,22 @@ Current access:
 - `TEACHER`: read and manage attendance for assigned batches only.
 - `STUDENT`: read own attendance only.
 
+Assignments:
+
+```txt
+GET    /api/assignments
+POST   /api/assignments
+GET    /api/assignments/:id
+PATCH  /api/assignments/:id
+DELETE /api/assignments/:id
+```
+
+Current access:
+
+- `ADMIN`: read and manage all assignments.
+- `TEACHER`: read and manage assignments for assigned batches only.
+- `STUDENT`: read assignments for own batch only.
+
 ## Request Pattern
 
 1. Route handler receives the request.
