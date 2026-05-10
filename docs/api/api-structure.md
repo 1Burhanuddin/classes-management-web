@@ -63,6 +63,18 @@ DELETE /api/batches/:id
 
 Current access: `ADMIN`.
 
+Teachers:
+
+```txt
+GET    /api/teachers
+POST   /api/teachers
+GET    /api/teachers/:id
+PATCH  /api/teachers/:id
+DELETE /api/teachers/:id
+```
+
+Current access: `ADMIN`.
+
 ## Request Pattern
 
 1. Route handler receives the request.
