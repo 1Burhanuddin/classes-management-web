@@ -1,9 +1,5 @@
 import { z } from "zod";
-
-const optionalText = z.preprocess(
-  (value) => (typeof value === "string" && value.trim() === "" ? undefined : value),
-  z.string().trim().min(1).max(500).optional(),
-);
+import { nonEmptyPatchSchema, optionalTrimmedString } from "@/lib/validation";
 
 export const classIdSchema = z.object({
   id: z.uuid(),
@@ -17,12 +13,10 @@ export const listClassesQuerySchema = z.object({
 
 export const createClassSchema = z.object({
   name: z.string().trim().min(2).max(120),
-  description: optionalText,
+  description: optionalTrimmedString(500),
 });
 
-export const updateClassSchema = createClassSchema.partial().refine((value) => Object.keys(value).length > 0, {
-  message: "At least one field is required",
-});
+export const updateClassSchema = nonEmptyPatchSchema(createClassSchema);
 
 export type CreateClassInput = z.infer<typeof createClassSchema>;
 export type ListClassesQuery = z.infer<typeof listClassesQuerySchema>;

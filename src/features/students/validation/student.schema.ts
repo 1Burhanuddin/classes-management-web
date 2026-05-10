@@ -1,12 +1,8 @@
 import { z } from "zod";
-
-const optionalText = z.preprocess(
-  (value) => (typeof value === "string" && value.trim() === "" ? undefined : value),
-  z.string().trim().min(1).max(500).optional(),
-);
+import { emptyStringToUndefined, nonEmptyPatchSchema, optionalTrimmedString } from "@/lib/validation";
 
 const phone = z.preprocess(
-  (value) => (typeof value === "string" && value.trim() === "" ? undefined : value),
+  emptyStringToUndefined,
   z
     .string()
     .trim()
@@ -29,14 +25,12 @@ export const createStudentSchema = z.object({
   fullName: z.string().trim().min(2).max(120),
   phone,
   parentPhone: phone,
-  address: optionalText,
+  address: optionalTrimmedString(500),
   batchId: z.uuid(),
   userId: z.uuid().optional(),
 });
 
-export const updateStudentSchema = createStudentSchema.partial().refine((value) => Object.keys(value).length > 0, {
-  message: "At least one field is required",
-});
+export const updateStudentSchema = nonEmptyPatchSchema(createStudentSchema);
 
 export type ListStudentsQuery = z.infer<typeof listStudentsQuerySchema>;
 export type CreateStudentInput = z.infer<typeof createStudentSchema>;

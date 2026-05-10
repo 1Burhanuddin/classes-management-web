@@ -1,7 +1,8 @@
 import { z } from "zod";
+import { emptyStringToUndefined, nonEmptyPatchSchema } from "@/lib/validation";
 
 const optionalTime = z.preprocess(
-  (value) => (typeof value === "string" && value.trim() === "" ? undefined : value),
+  emptyStringToUndefined,
   z
     .string()
     .trim()
@@ -29,9 +30,7 @@ export const createBatchSchema = z.object({
   endTime: optionalTime,
 });
 
-export const updateBatchSchema = createBatchSchema.partial().refine((value) => Object.keys(value).length > 0, {
-  message: "At least one field is required",
-});
+export const updateBatchSchema = nonEmptyPatchSchema(createBatchSchema);
 
 export type CreateBatchInput = z.infer<typeof createBatchSchema>;
 export type ListBatchesQuery = z.infer<typeof listBatchesQuerySchema>;

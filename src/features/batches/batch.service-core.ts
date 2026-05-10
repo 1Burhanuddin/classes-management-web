@@ -56,6 +56,39 @@ export function createBatchService(db: BatchServiceDb) {
     }
   }
 
+  async function assertBatchRelationsExist(input: { classId?: string; teacherId?: string }) {
+    if (input.classId && input.teacherId) {
+      const [classRecord, teacher] = await Promise.all([
+        db.class.findUnique({
+          where: { id: input.classId },
+          select: { id: true },
+        }),
+        db.teacher.findUnique({
+          where: { id: input.teacherId },
+          select: { id: true },
+        }),
+      ]);
+
+      if (!classRecord) {
+        throw new ApiError(404, "Class not found");
+      }
+
+      if (!teacher) {
+        throw new ApiError(404, "Teacher not found");
+      }
+
+      return;
+    }
+
+    if (input.classId) {
+      await assertClassExists(input.classId);
+    }
+
+    if (input.teacherId) {
+      await assertTeacherExists(input.teacherId);
+    }
+  }
+
   async function getBatch(id: string) {
     const batch = await db.batch.findUnique({
       where: { id },
@@ -111,11 +144,7 @@ export function createBatchService(db: BatchServiceDb) {
     getBatch,
 
     async createBatch(input: CreateBatchInput) {
-      await assertClassExists(input.classId);
-
-      if (input.teacherId) {
-        await assertTeacherExists(input.teacherId);
-      }
+      await assertBatchRelationsExist(input);
 
       return db.batch.create({
         data: input,
@@ -125,14 +154,7 @@ export function createBatchService(db: BatchServiceDb) {
 
     async updateBatch(id: string, input: UpdateBatchInput) {
       await getBatch(id);
-
-      if (input.classId) {
-        await assertClassExists(input.classId);
-      }
-
-      if (input.teacherId) {
-        await assertTeacherExists(input.teacherId);
-      }
+      await assertBatchRelationsExist(input);
 
       return db.batch.update({
         where: { id },
