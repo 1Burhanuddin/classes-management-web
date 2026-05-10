@@ -29,6 +29,17 @@ describe("attendance validation", () => {
     expect(result.success).toBe(false);
   });
 
+  it("rejects impossible calendar dates", () => {
+    const result = createAttendanceSchema.safeParse({
+      studentId,
+      batchId,
+      status: "PRESENT",
+      date: "2026-02-31",
+    });
+
+    expect(result.success).toBe(false);
+  });
+
   it("rejects invalid status", () => {
     const result = createAttendanceSchema.safeParse({
       studentId,

@@ -6,7 +6,7 @@ const batchId = "11111111-1111-4111-8111-111111111111";
 const userId = "22222222-2222-4222-8222-222222222222";
 const studentId = "33333333-3333-4333-8333-333333333333";
 
-function createMockDb(overrides: Partial<StudentServiceDb> = {}) {
+function createMockDb(overrides: Record<string, unknown> = {}) {
   const db = {
     batch: {
       findUnique: vi.fn().mockResolvedValue({ id: batchId }),
@@ -54,7 +54,7 @@ describe("student service", () => {
       batch: {
         findUnique: vi.fn().mockResolvedValue(null),
       },
-    } as Partial<StudentServiceDb>);
+    });
     const service = createStudentService(db);
 
     await expect(
@@ -70,7 +70,7 @@ describe("student service", () => {
       user: {
         findUnique: vi.fn().mockResolvedValue(null),
       },
-    } as Partial<StudentServiceDb>);
+    });
     const service = createStudentService(db);
 
     await expect(
@@ -87,7 +87,7 @@ describe("student service", () => {
       user: {
         findUnique: vi.fn().mockResolvedValue({ id: userId, student: { id: "44444444-4444-4444-8444-444444444444" } }),
       },
-    } as Partial<StudentServiceDb>);
+    });
     const service = createStudentService(db);
 
     await expect(
@@ -105,7 +105,7 @@ describe("student service", () => {
         count: vi.fn().mockResolvedValue(45),
         findMany: vi.fn().mockResolvedValue([]),
       },
-    } as Partial<StudentServiceDb>);
+    });
     const service = createStudentService(db);
 
     const result = await service.listStudents({

@@ -2,17 +2,10 @@ import { baseApi } from "./baseApi";
 import type {
   AttendanceListItem,
   CreateAttendanceInput,
+  ListAttendanceQueryInput,
   PaginatedAttendance,
   UpdateAttendanceInput,
 } from "@/features/attendance";
-
-type ListAttendanceArgs = {
-  page?: number;
-  pageSize?: number;
-  batchId?: string;
-  studentId?: string;
-  date?: string;
-};
 
 type AttendanceResponse = {
   attendance: AttendanceListItem;
@@ -20,10 +13,10 @@ type AttendanceResponse = {
 
 export const attendanceApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    listAttendance: builder.query<PaginatedAttendance, ListAttendanceArgs | void>({
+    listAttendance: builder.query<PaginatedAttendance, ListAttendanceQueryInput | undefined>({
       query: (args) => ({
         url: "/attendance",
-        params: args ?? undefined,
+        params: args,
       }),
       providesTags: ["Attendance"],
     }),

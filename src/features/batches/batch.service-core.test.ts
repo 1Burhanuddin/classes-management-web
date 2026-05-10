@@ -13,7 +13,7 @@ const emptyCount = {
   attendances: 0,
 };
 
-function createMockDb(overrides: Partial<BatchServiceDb> = {}) {
+function createMockDb(overrides: Record<string, unknown> = {}) {
   const db = {
     batch: {
       count: vi.fn().mockResolvedValue(0),
@@ -57,7 +57,7 @@ describe("batch service", () => {
       class: {
         findUnique: vi.fn().mockResolvedValue(null),
       },
-    } as Partial<BatchServiceDb>);
+    });
     const service = createBatchService(db);
 
     await expect(
@@ -73,7 +73,7 @@ describe("batch service", () => {
       teacher: {
         findUnique: vi.fn().mockResolvedValue(null),
       },
-    } as Partial<BatchServiceDb>);
+    });
     const service = createBatchService(db);
 
     await expect(
@@ -98,7 +98,7 @@ describe("batch service", () => {
           },
         }),
       },
-    } as Partial<BatchServiceDb>);
+    });
     const service = createBatchService(db);
 
     await expect(service.deleteBatch(batchId)).rejects.toMatchObject(
@@ -112,7 +112,7 @@ describe("batch service", () => {
         count: vi.fn().mockResolvedValue(35),
         findMany: vi.fn().mockResolvedValue([]),
       },
-    } as Partial<BatchServiceDb>);
+    });
     const service = createBatchService(db);
 
     const result = await service.listBatches({

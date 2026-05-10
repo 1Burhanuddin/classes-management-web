@@ -39,25 +39,45 @@ function createAttendance(overrides = {}) {
   };
 }
 
-function createMockDb(overrides: Partial<AttendanceServiceDb> = {}) {
+function buildAttendanceMocks(overrides = {}) {
+  return {
+    count: vi.fn().mockResolvedValue(0),
+    create: vi.fn().mockImplementation(({ data }) => Promise.resolve(createAttendance(data))),
+    delete: vi.fn().mockResolvedValue({ id: attendanceId }),
+    findMany: vi.fn().mockResolvedValue([]),
+    findUnique: vi.fn().mockResolvedValue(createAttendance()),
+    update: vi.fn().mockImplementation(({ data }) => Promise.resolve(createAttendance(data))),
+    ...overrides,
+  };
+}
+
+function buildBatchMocks(overrides = {}) {
+  return {
+    findUnique: vi.fn().mockResolvedValue({ id: batchId, teacherId }),
+    ...overrides,
+  };
+}
+
+function buildStudentMocks(overrides = {}) {
+  return {
+    findUnique: vi.fn().mockResolvedValue({ id: studentId, batchId }),
+    ...overrides,
+  };
+}
+
+function buildTeacherMocks(overrides = {}) {
+  return {
+    findUnique: vi.fn().mockResolvedValue({ id: teacherId, batches: [{ id: batchId }] }),
+    ...overrides,
+  };
+}
+
+function createMockDb(overrides: Record<string, unknown> = {}) {
   const db = {
-    attendance: {
-      count: vi.fn().mockResolvedValue(0),
-      create: vi.fn().mockImplementation(({ data }) => Promise.resolve(createAttendance(data))),
-      delete: vi.fn().mockResolvedValue({ id: attendanceId }),
-      findMany: vi.fn().mockResolvedValue([]),
-      findUnique: vi.fn().mockResolvedValue(createAttendance()),
-      update: vi.fn().mockImplementation(({ data }) => Promise.resolve(createAttendance(data))),
-    },
-    batch: {
-      findUnique: vi.fn().mockResolvedValue({ id: batchId, teacherId }),
-    },
-    student: {
-      findUnique: vi.fn().mockResolvedValue({ id: studentId, batchId }),
-    },
-    teacher: {
-      findUnique: vi.fn().mockResolvedValue({ id: teacherId, batches: [{ id: batchId }] }),
-    },
+    attendance: buildAttendanceMocks(),
+    batch: buildBatchMocks(),
+    student: buildStudentMocks(),
+    teacher: buildTeacherMocks(),
     ...overrides,
   };
 
@@ -67,11 +87,10 @@ function createMockDb(overrides: Partial<AttendanceServiceDb> = {}) {
 describe("attendance service", () => {
   it("allows admin to create attendance", async () => {
     const db = createMockDb({
-      attendance: {
-        create: vi.fn().mockImplementation(({ data }) => Promise.resolve(createAttendance(data))),
+      attendance: buildAttendanceMocks({
         findUnique: vi.fn().mockResolvedValue(null),
-      },
-    } as Partial<AttendanceServiceDb>);
+      }),
+    });
     const service = createAttendanceService(db);
 
     const attendance = await service.createAttendance(adminActor, {
@@ -90,11 +109,10 @@ describe("attendance service", () => {
 
   it("allows assigned teacher to create attendance", async () => {
     const db = createMockDb({
-      attendance: {
-        create: vi.fn().mockImplementation(({ data }) => Promise.resolve(createAttendance(data))),
+      attendance: buildAttendanceMocks({
         findUnique: vi.fn().mockResolvedValue(null),
-      },
-    } as Partial<AttendanceServiceDb>);
+      }),
+    });
     const service = createAttendanceService(db);
 
     await expect(
@@ -109,10 +127,10 @@ describe("attendance service", () => {
 
   it("rejects teacher managing an unassigned batch", async () => {
     const db = createMockDb({
-      teacher: {
+      teacher: buildTeacherMocks({
         findUnique: vi.fn().mockResolvedValue({ id: teacherId, batches: [] }),
-      },
-    } as Partial<AttendanceServiceDb>);
+      }),
+    });
     const service = createAttendanceService(db);
 
     await expect(
@@ -141,13 +159,13 @@ describe("attendance service", () => {
 
   it("rejects attendance when student does not belong to batch", async () => {
     const db = createMockDb({
-      attendance: {
+      attendance: buildAttendanceMocks({
         findUnique: vi.fn().mockResolvedValue(null),
-      },
-      student: {
+      }),
+      student: buildStudentMocks({
         findUnique: vi.fn().mockResolvedValue({ id: studentId, batchId: "77777777-7777-4777-8777-777777777777" }),
-      },
-    } as Partial<AttendanceServiceDb>);
+      }),
+    });
     const service = createAttendanceService(db);
 
     await expect(
@@ -176,11 +194,11 @@ describe("attendance service", () => {
 
   it("limits student list access to their own attendance", async () => {
     const db = createMockDb({
-      attendance: {
+      attendance: buildAttendanceMocks({
         count: vi.fn().mockResolvedValue(1),
         findMany: vi.fn().mockResolvedValue([createAttendance()]),
-      },
-    } as Partial<AttendanceServiceDb>);
+      }),
+    });
     const service = createAttendanceService(db);
 
     const result = await service.listAttendance(studentActor, {
@@ -189,6 +207,11 @@ describe("attendance service", () => {
     });
 
     expect(result.pagination.total).toBe(1);
+    expect(db.student.findUnique).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { userId: studentActor.id },
+      }),
+    );
     expect(db.attendance.findMany).toHaveBeenCalledWith(
       expect.objectContaining({
         where: expect.objectContaining({
@@ -201,10 +224,10 @@ describe("attendance service", () => {
 
   it("rejects student reading another student's attendance", async () => {
     const db = createMockDb({
-      attendance: {
+      attendance: buildAttendanceMocks({
         findUnique: vi.fn().mockResolvedValue(createAttendance({ studentId: "88888888-8888-4888-8888-888888888888" })),
-      },
-    } as Partial<AttendanceServiceDb>);
+      }),
+    });
     const service = createAttendanceService(db);
 
     await expect(service.getAttendance(studentActor, attendanceId)).rejects.toMatchObject(new ApiError(403, "Forbidden"));

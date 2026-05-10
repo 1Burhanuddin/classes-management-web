@@ -34,7 +34,7 @@ function createUser(overrides = {}) {
   };
 }
 
-function createMockDb(overrides: Partial<TeacherServiceDb> = {}) {
+function createMockDb(overrides: Record<string, unknown> = {}) {
   const teacher = {
     count: vi.fn().mockResolvedValue(0),
     create: vi.fn().mockImplementation(({ data }) => Promise.resolve(createTeacher(data))),
@@ -50,6 +50,7 @@ function createMockDb(overrides: Partial<TeacherServiceDb> = {}) {
   const db = {
     teacher,
     user,
+    $transaction: vi.fn(),
     ...overrides,
   };
   db.$transaction = vi.fn().mockImplementation((callback) => callback({ teacher: db.teacher, user: db.user }));
@@ -83,7 +84,7 @@ describe("teacher service", () => {
       user: {
         findUnique: vi.fn().mockResolvedValue(null),
       },
-    } as Partial<TeacherServiceDb>);
+    });
     const service = createTeacherService(db);
 
     await expect(service.createTeacher({ userId })).rejects.toMatchObject(new ApiError(404, "User not found"));
@@ -94,7 +95,7 @@ describe("teacher service", () => {
       user: {
         findUnique: vi.fn().mockResolvedValue(createUser({ role: Role.ADMIN })),
       },
-    } as Partial<TeacherServiceDb>);
+    });
     const service = createTeacherService(db);
 
     await expect(service.createTeacher({ userId })).rejects.toMatchObject(
@@ -107,7 +108,7 @@ describe("teacher service", () => {
       user: {
         findUnique: vi.fn().mockResolvedValue(createUser({ student: { id: "44444444-4444-4444-8444-444444444444" } })),
       },
-    } as Partial<TeacherServiceDb>);
+    });
     const service = createTeacherService(db);
 
     await expect(service.createTeacher({ userId })).rejects.toMatchObject(new ApiError(409, "User is already linked to a student"));
@@ -118,7 +119,7 @@ describe("teacher service", () => {
       user: {
         findUnique: vi.fn().mockResolvedValue(createUser({ teacher: { id: "44444444-4444-4444-8444-444444444444" } })),
       },
-    } as Partial<TeacherServiceDb>);
+    });
     const service = createTeacherService(db);
 
     await expect(service.createTeacher({ userId })).rejects.toMatchObject(
@@ -132,7 +133,7 @@ describe("teacher service", () => {
         findUnique: vi.fn().mockResolvedValue(createUser({ id: nextUserId })),
         update: vi.fn().mockResolvedValue(createUser({ role: Role.TEACHER })),
       },
-    } as Partial<TeacherServiceDb>);
+    });
     const service = createTeacherService(db);
 
     await service.updateTeacher(teacherId, {
@@ -154,7 +155,7 @@ describe("teacher service", () => {
       teacher: {
         findUnique: vi.fn().mockResolvedValue(createTeacher({ _count: { batches: 1 } })),
       },
-    } as Partial<TeacherServiceDb>);
+    });
     const service = createTeacherService(db);
 
     await expect(service.deleteTeacher(teacherId)).rejects.toMatchObject(
@@ -168,7 +169,7 @@ describe("teacher service", () => {
         count: vi.fn().mockResolvedValue(21),
         findMany: vi.fn().mockResolvedValue([]),
       },
-    } as Partial<TeacherServiceDb>);
+    });
     const service = createTeacherService(db);
 
     const result = await service.listTeachers({
