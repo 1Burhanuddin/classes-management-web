@@ -35,6 +35,14 @@ describe("class validation", () => {
     expect(result.success).toBe(false);
   });
 
+  it("rejects update payloads that normalize to empty values", () => {
+    const result = updateClassSchema.safeParse({
+      description: "   ",
+    });
+
+    expect(result.success).toBe(false);
+  });
+
   it("caps page size", () => {
     const result = listClassesQuerySchema.safeParse({
       page: "1",
