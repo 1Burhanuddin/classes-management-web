@@ -152,6 +152,27 @@ DELETE /api/assignments/:id
 - Create/update validates batch existence.
 - Backend edge-case tests added for validation and service behavior.
 
+### Announcements Backend
+
+- Announcements validation added with Zod.
+- Announcements service layer added.
+- Announcements API routes added:
+
+```txt
+GET    /api/announcements
+POST   /api/announcements
+GET    /api/announcements/:id
+PATCH  /api/announcements/:id
+DELETE /api/announcements/:id
+```
+
+- RTK Query announcement endpoints added.
+- `ADMIN` can read and manage all announcements.
+- `TEACHER` can read and manage announcements only for assigned batches.
+- `STUDENT` can read announcements only for their own batch.
+- Create/update validates batch existence.
+- Backend edge-case tests added for validation and service behavior.
+
 ## Verification
 
 Latest checks:
@@ -208,15 +229,22 @@ Current test coverage:
 - Assignment service rejects unassigned teacher writes.
 - Assignment service rejects student writes.
 - Assignment service limits student reads to their own batch.
+- Announcement validation rejects short titles.
+- Announcement validation rejects short messages.
+- Announcement validation rejects invalid batch ids.
+- Announcement validation rejects empty updates.
+- Announcement validation caps page size.
+- Announcement service rejects unassigned teacher writes.
+- Announcement service rejects student writes.
+- Announcement service limits student reads to their own batch.
 
 ## Next Work
 
 Recommended next backend steps:
 
-1. Add Announcements module API.
-2. Add Fees module API.
-3. Add endpoint-level tests for route responses once test auth helpers are introduced.
-4. Start UI only after the UI kit is provided.
+1. Add Fees module API.
+2. Add endpoint-level tests for route responses once test auth helpers are introduced.
+3. Start UI only after the UI kit is provided.
 
 ## Notes For Other Developers
 
