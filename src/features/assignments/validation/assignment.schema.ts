@@ -47,6 +47,8 @@ export const updateAssignmentSchema = nonEmptyPatchSchema(
 );
 
 export type CreateAssignmentInput = z.infer<typeof createAssignmentSchema>;
+export type CreateAssignmentBody = z.input<typeof createAssignmentSchema>;
 export type ListAssignmentsQueryInput = z.input<typeof listAssignmentsQuerySchema>;
 export type ListAssignmentsQuery = z.infer<typeof listAssignmentsQuerySchema>;
 export type UpdateAssignmentInput = z.infer<typeof updateAssignmentSchema>;
+export type UpdateAssignmentBody = z.input<typeof updateAssignmentSchema>;

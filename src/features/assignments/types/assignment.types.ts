@@ -5,7 +5,13 @@ export type AssignmentActor = {
   role: Role;
 };
 
-export type AssignmentListItem = Assignment & {
+type AssignmentTransport = Omit<Assignment, "createdAt" | "dueDate" | "updatedAt"> & {
+  createdAt: string;
+  dueDate: string | null;
+  updatedAt: string;
+};
+
+export type AssignmentListItem = AssignmentTransport & {
   batch: {
     id: string;
     name: string;

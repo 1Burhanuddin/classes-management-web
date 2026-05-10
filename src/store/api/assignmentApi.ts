@@ -1,10 +1,10 @@
 import { baseApi } from "./baseApi";
 import type {
   AssignmentListItem,
-  CreateAssignmentInput,
+  CreateAssignmentBody,
   ListAssignmentsQueryInput,
   PaginatedAssignments,
-  UpdateAssignmentInput,
+  UpdateAssignmentBody,
 } from "@/features/assignments";
 
 type AssignmentResponse = {
@@ -24,7 +24,7 @@ export const assignmentApi = baseApi.injectEndpoints({
       query: (id) => `/assignments/${id}`,
       providesTags: (_result, _error, id) => [{ type: "Assignment", id }],
     }),
-    createAssignment: builder.mutation<AssignmentResponse, CreateAssignmentInput>({
+    createAssignment: builder.mutation<AssignmentResponse, CreateAssignmentBody>({
       query: (body) => ({
         url: "/assignments",
         method: "POST",
@@ -32,7 +32,7 @@ export const assignmentApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Assignment"],
     }),
-    updateAssignment: builder.mutation<AssignmentResponse, { id: string; body: UpdateAssignmentInput }>({
+    updateAssignment: builder.mutation<AssignmentResponse, { id: string; body: UpdateAssignmentBody }>({
       query: ({ id, body }) => ({
         url: `/assignments/${id}`,
         method: "PATCH",

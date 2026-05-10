@@ -1,9 +1,11 @@
 export { assignmentService, createAssignmentService } from "./assignment.service";
 export type { AssignmentActor, AssignmentListItem, PaginatedAssignments } from "./types/assignment.types";
 export type {
+  CreateAssignmentBody,
   CreateAssignmentInput,
   ListAssignmentsQuery,
   ListAssignmentsQueryInput,
+  UpdateAssignmentBody,
   UpdateAssignmentInput,
 } from "./validation/assignment.schema";
 export {
