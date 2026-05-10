@@ -173,6 +173,28 @@ DELETE /api/announcements/:id
 - Create/update validates batch existence.
 - Backend edge-case tests added for validation and service behavior.
 
+### Fees Backend
+
+- Fees validation added with Zod.
+- Fees service layer added.
+- Fees API routes added:
+
+```txt
+GET    /api/fees
+POST   /api/fees
+GET    /api/fees/:id
+PATCH  /api/fees/:id
+DELETE /api/fees/:id
+```
+
+- RTK Query fee endpoints added.
+- Fee due dates and paid dates are accepted as `YYYY-MM-DD` and normalized to UTC midnight.
+- `ADMIN` can read and manage all fees.
+- `STUDENT` can read only their own fees.
+- `TEACHER` has no fee access in the MVP.
+- Create/update validates student existence.
+- Backend edge-case tests added for validation and service behavior.
+
 ## Verification
 
 Latest checks:
@@ -237,14 +259,21 @@ Current test coverage:
 - Announcement service rejects unassigned teacher writes.
 - Announcement service rejects student writes.
 - Announcement service limits student reads to their own batch.
+- Fee validation rejects invalid amounts.
+- Fee validation rejects impossible due dates.
+- Fee validation rejects invalid statuses.
+- Fee validation rejects empty updates.
+- Fee validation caps page size.
+- Fee service rejects missing students.
+- Fee service rejects non-admin writes.
+- Fee service limits student reads to their own fees.
 
 ## Next Work
 
 Recommended next backend steps:
 
-1. Add Fees module API.
-2. Add endpoint-level tests for route responses once test auth helpers are introduced.
-3. Start UI only after the UI kit is provided.
+1. Add endpoint-level tests for route responses once test auth helpers are introduced.
+2. Start UI only after the UI kit is provided.
 
 ## Notes For Other Developers
 
