@@ -1,0 +1,24 @@
+node_modules/
+.next/
+out/
+dist/
+build/
+tsconfig.tsbuildinfo
+
+.env
+.env*.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+.DS_Store
+.clerk/.tmp/
+.codex
+.agents
+.qodo
+# clerk configuration (can include secrets)
+/.clerk/
+
+/src/generated/prisma
